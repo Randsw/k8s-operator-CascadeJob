@@ -1,0 +1,24 @@
+# permissions for end users to edit cascademanualoperators.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cascademanualoperator-editor-role
+rules:
+- apiGroups:
+  - cascade.cascade.net
+  resources:
+  - cascademanualoperators
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - cascade.cascade.net
+  resources:
+  - cascademanualoperators/status
+  verbs:
+  - get

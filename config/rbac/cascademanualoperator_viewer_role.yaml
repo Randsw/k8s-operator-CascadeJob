@@ -1,0 +1,20 @@
+# permissions for end users to view cascademanualoperators.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cascademanualoperator-viewer-role
+rules:
+- apiGroups:
+  - cascade.cascade.net
+  resources:
+  - cascademanualoperators
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - cascade.cascade.net
+  resources:
+  - cascademanualoperators/status
+  verbs:
+  - get
