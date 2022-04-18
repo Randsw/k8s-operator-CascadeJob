@@ -17,7 +17,7 @@ limitations under the License.
 package v1alpha1
 
 import (
-	batchv1 "k8s.io/api/batch/v1"
+	//batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -26,7 +26,7 @@ type CascadeModule struct {
 	// Configuration parameter for Cascade Module
 	// +patchMergeKey=name
 	// +patchStrategy=merge
-	ModuleName string `json:"modulename"`
+	ModuleName    string            `json:"modulename"`
 	Configuration map[string]string `json:"configuration"`
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
@@ -106,19 +106,21 @@ type CascadeManualOperatorSpec struct {
 type CascadeManualOperatorStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
-
+	Active    int32 `json:"active"`
+	Succeeded int32 `json:"succeeded"`
 }
 
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
-
+//+kubebuilder:printcolumn:name="Active Jobs",type="string",JSONPath=".status.active",description="The active status of this Scenario"
+//+kubebuilder:printcolumn:name="Succeeded Jobs",type="string",JSONPath=".status.succeeded",description="The succeeded status of this Scenario"
 // CascadeManualOperator is the Schema for the cascademanualoperators API
 type CascadeManualOperator struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   CascadeManualOperatorSpec `json:"spec,omitempty"`
-	Status *batchv1.JobStatus        `json:"status,omitempty"`
+	Spec   CascadeManualOperatorSpec   `json:"spec,omitempty"`
+	Status CascadeManualOperatorStatus `json:"status,omitempty"`
 }
 
 //+kubebuilder:object:root=true

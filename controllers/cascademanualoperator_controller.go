@@ -99,7 +99,7 @@ func (r *CascadeManualOperatorReconciler) Reconcile(ctx context.Context, req ctr
 			logger.Error(err, "Failed to create new Job", "Job.Namespace", job.Namespace, "Job.Name", job.Name)
 			return ctrl.Result{}, err
 		}
-		// Deployment created successfully - return and requeue
+		// Job created successfully - return and requeue
 		return ctrl.Result{Requeue: true}, nil
 	} else if err != nil {
 		logger.Error(err, "Failed to get Job")
@@ -116,14 +116,34 @@ func (r *CascadeManualOperatorReconciler) Reconcile(ctx context.Context, req ctr
 			logger.Error(err, "Failed to create new ConfigMap", "ConfigMap.Namespace", cm.Namespace, "ConfigMap.Name", cm.Name)
 			return ctrl.Result{}, err
 		}
+		// ConfigMap created successfully - return and requeue
+		return ctrl.Result{Requeue: true}, nil
 	} else if err != nil {
 		logger.Error(err, "Failed to get ConfigMap")
 		return ctrl.Result{}, err
 	}
 
-	instance.Status = &found.Status
+	// Update status.Phase if needed
+	if instance.Status.Active != found.Status.Active {
+		logger.Info("Update Active Job Status")
+		instance.Status.Active = found.Status.Active
+		err := r.Status().Update(ctx, instance)
+		if err != nil {
+			logger.Error(err, "Failed to update CascadeManualOperator status")
+			return ctrl.Result{}, err
+		}
+	}
 
-	//return ctrl.Result{}, r.Client.Status().Update(context.TODO(), instance)
+	if instance.Status.Succeeded != found.Status.Succeeded {
+		logger.Info("Update Succeeded Job Status")
+		instance.Status.Succeeded = found.Status.Succeeded
+		err := r.Status().Update(ctx, instance)
+		if err != nil {
+			logger.Error(err, "Failed to update CascadeManualOperator status")
+			return ctrl.Result{}, err
+		}
+	}
+	logger.Info("Number of job", string(found.Status.Active), string(found.Status.Succeeded))
 	return ctrl.Result{}, nil
 }
 
