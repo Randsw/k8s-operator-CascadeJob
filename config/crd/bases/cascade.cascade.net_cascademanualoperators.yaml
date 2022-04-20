@@ -24,6 +24,14 @@ spec:
       jsonPath: .status.succeeded
       name: Succeeded Jobs
       type: string
+    - description: The failed status of this Scenario
+      jsonPath: .status.failed
+      name: Failed Jobs
+      type: string
+    - description: The result of this Scenario
+      jsonPath: .status.result
+      name: Scenario Result
+      type: string
     name: v1alpha1
     schema:
       openAPIV3Schema:
@@ -15229,11 +15237,18 @@ spec:
                   this file'
                 format: int32
                 type: integer
+              failed:
+                format: int32
+                type: integer
+              result:
+                type: string
               succeeded:
                 format: int32
                 type: integer
             required:
             - active
+            - failed
+            - result
             - succeeded
             type: object
         type: object

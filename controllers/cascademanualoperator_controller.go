@@ -126,6 +126,9 @@ func (r *CascadeManualOperatorReconciler) Reconcile(ctx context.Context, req ctr
 	// Update status.Phase if needed
 	if instance.Status.Active != found.Status.Active {
 		logger.Info("Update Active Job Status")
+		if found.Status.Active > 0 {
+			instance.Status.Result = "Running"
+		}
 		instance.Status.Active = found.Status.Active
 		err := r.Status().Update(ctx, instance)
 		if err != nil {
@@ -136,6 +139,9 @@ func (r *CascadeManualOperatorReconciler) Reconcile(ctx context.Context, req ctr
 
 	if instance.Status.Succeeded != found.Status.Succeeded {
 		logger.Info("Update Succeeded Job Status")
+		if found.Status.Succeeded > 0 {
+			instance.Status.Result = "Completed"
+		}
 		instance.Status.Succeeded = found.Status.Succeeded
 		err := r.Status().Update(ctx, instance)
 		if err != nil {
@@ -143,6 +149,20 @@ func (r *CascadeManualOperatorReconciler) Reconcile(ctx context.Context, req ctr
 			return ctrl.Result{}, err
 		}
 	}
+
+	if instance.Status.Failed != found.Status.Failed {
+		logger.Info("Update Failed Job Status")
+		if found.Status.Failed > 0 {
+			instance.Status.Result = "Failed"
+		}
+		instance.Status.Failed = found.Status.Failed
+		err := r.Status().Update(ctx, instance)
+		if err != nil {
+			logger.Error(err, "Failed to update CascadeManualOperator status")
+			return ctrl.Result{}, err
+		}
+	}
+
 	logger.Info("Number of job", string(found.Status.Active), string(found.Status.Succeeded))
 	return ctrl.Result{}, nil
 }
