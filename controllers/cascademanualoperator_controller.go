@@ -81,7 +81,7 @@ func (r *CascadeManualOperatorReconciler) Reconcile(ctx context.Context, req ctr
 	}
 	// Not prepared for deletion
 	if !instance.GetDeletionTimestamp().IsZero() {
-		logger.Info("Prepared for deletition")
+		logger.Info("Prepared for delete")
 		return ctrl.Result{}, nil
 	}
 
