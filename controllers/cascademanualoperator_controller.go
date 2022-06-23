@@ -148,6 +148,12 @@ func (r *CascadeManualOperatorReconciler) Reconcile(ctx context.Context, req ctr
 			logger.Error(err, "Failed to update CascadeManualOperator status")
 			return ctrl.Result{}, err
 		}
+		logger.Info("Deleting CRD")
+		err = r.Delete(ctx, instance)
+		if err != nil {
+			logger.Error(err, "Failed to delete CRD after succesfull scenario finish")
+			return ctrl.Result{}, err
+		}
 	}
 
 	if instance.Status.Failed != found.Status.Failed {
@@ -197,6 +203,8 @@ func (r *CascadeManualOperatorReconciler) getJob(instance *cascadev1alpha1.Casca
 	if podSpec.Spec.RestartPolicy == "Always" {
 		podSpec.Spec.RestartPolicy = "OnFailure"
 	}
+	podSpec.Spec.Volumes[0].ConfigMap.Name = instance.Name + "-cm"
+	podSpec.Spec.ServiceAccountName = "cascade"
 	job := &batchv1.Job{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "Job",
@@ -229,7 +237,7 @@ func (r *CascadeManualOperatorReconciler) getCm(instance *cascadev1alpha1.Cascad
 			Labels:    instance.Labels,
 		},
 		Data: map[string]string{
-			"Configuration": string(data),
+			"configuration": string(data),
 		},
 	}
 
