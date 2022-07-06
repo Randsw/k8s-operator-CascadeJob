@@ -1,0 +1,15 @@
+- op: replace
+  path: "/spec/scenarioconfig/cascademodules/0/modulename"
+  value: fail
+- op: replace
+  path: "/spec/scenarioconfig/cascademodules/0/template/spec/containers/0/name"
+  value: fail
+- op: replace
+  path: "/spec/scenarioconfig/cascademodules/0/template/spec/containers/0/image"
+  value: busybox:1.35
+- op: add
+  path: "/spec/scenarioconfig/cascademodules/0/template/spec/containers/0/command"
+  value: [ "/bin/sh", "-c", "--" ]
+- op: add
+  path: "/spec/scenarioconfig/cascademodules/0/template/spec/containers/0/args"
+  value: [ "sleep 30; exit 1;" ] 

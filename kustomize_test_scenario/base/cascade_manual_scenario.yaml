@@ -1,0 +1,72 @@
+apiVersion: cascade.cascade.net/v1alpha1
+kind: CascadeManualOperator
+metadata:
+  name: cascademanualoperator-ip
+  namespace: cascade-manual
+  labels:
+    app: cascade
+spec:
+  template:
+    spec:
+      containers:
+      - name: cascadescenario-ip
+        image: ghcr.io/randsw/cascadescenariocontroller:0.2.5
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+          - name: config-volume
+            mountPath: /tmp
+        env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: SCENARIO_NAME
+          value: cascadescenario-ip
+      volumes:
+        - name: config-volume
+          configMap:
+            name: cascademanualoperator-ip-cm # This field is mutable
+      restartPolicy: Never
+  scenarioconfig:
+    cascademodules:
+      - modulename: grayscale
+        configuration:  
+          foo: bar
+          spamm: eggs
+          test1: test2
+          s3path: http://192.168.110.154:9000/incoming/33e65374-ee8e-4da6-a2e7-71a9cc39d222.tgz
+        template:
+          spec:
+            containers:
+              - name: grayscale
+                image: ghcr.io/randsw/grayscale:0.1.1
+                imagePullPolicy: IfNotPresent
+            restartPolicy: OnFailure
+        backoffLimit: 0
+      - modulename: binarization
+        configuration:
+          thresh: "128"
+          eggs: spamm
+          test2: test1
+        template:
+          spec:
+            containers:
+              - name: binarization
+                image: ghcr.io/randsw/binarization:0.1.1
+                imagePullPolicy: IfNotPresent
+            restartPolicy: OnFailure
+        backoffLimit: 0
+      - modulename: diff
+        configuration:
+          bar: foo
+          eggs: spamm
+          test2: test1
+        template:
+          spec:
+            containers:
+              - name: diff
+                image: ghcr.io/randsw/diff:0.1.1
+                imagePullPolicy: IfNotPresent
+            restartPolicy: OnFailure
+        backoffLimit: 0
+  backoffLimit: 0
