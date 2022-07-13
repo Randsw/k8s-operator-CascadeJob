@@ -2,7 +2,7 @@
   path: "/spec/template/spec/containers/0/env/0"
   value:  
     name: STATUS_SERVER
-    value: http://192.168.32.187:8000
+    value: http://192.168.106.1:8000
 - op: replace
   path: "/spec/scenarioconfig/cascademodules/0/configuration/s3path"
-  value: http://192.168.32.187:9000/incoming/33e65374-ee8e-4da6-a2e7-71a9cc39d222.tgz
+  value: http://192.168.106.1:9000/incoming/33e65374-ee8e-4da6-a2e7-71a9cc39d222.tgz

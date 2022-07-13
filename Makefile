@@ -119,9 +119,17 @@ ifndef ignore-not-found
   ignore-not-found = false
 endif
 
+ifndef helm-namespace
+  helm-namespace = default
+endif
+
 .PHONY: install
 install: manifests kustomize ## Install CRDs into the K8s cluster specified in ~/.kube/config.
 	$(KUSTOMIZE) build config/crd | kubectl apply -f -
+
+.PHONY: install-helm
+install-helm: # Deploy cascade manual operator using HELM. Helm must be installed
+	cd cascadeManualOperator/ && helm upgrade --install --namespace $(helm-namespace) --create-namespace $(helm-namespace) . 
 
 .PHONY: uninstall
 uninstall: manifests kustomize ## Uninstall CRDs from the K8s cluster specified in ~/.kube/config. Call with ignore-not-found=true to ignore resource not found errors during deletion.

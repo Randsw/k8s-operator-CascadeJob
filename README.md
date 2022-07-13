@@ -25,3 +25,7 @@
 ## Delete operator
 
 `make undeploy`
+
+## Deploy using helm
+
+`make install-helm helm-namespace=<your-namespace>`

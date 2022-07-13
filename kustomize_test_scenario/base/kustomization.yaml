@@ -12,6 +12,9 @@ patches:
       kind: CascadeManualOperator
       name: cascademanualoperator.*
       labelSelector: "app=cascade"
+
 images:
 - name: ghcr.io/randsw/cascadescenariocontroller
   newTag: 0.2.6
+
+namespace: cascade-manual

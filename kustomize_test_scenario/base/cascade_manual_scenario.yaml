@@ -2,7 +2,6 @@ apiVersion: cascade.cascade.net/v1alpha1
 kind: CascadeManualOperator
 metadata:
   name: cascademanualoperator-ip
-  namespace: cascade-manual
   labels:
     app: cascade
 spec:
