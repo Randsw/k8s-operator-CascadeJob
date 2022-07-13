@@ -20,8 +20,6 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        - name: SCENARIO_NAME
-          value: cascadescenario-ip
       volumes:
         - name: config-volume
           configMap:
